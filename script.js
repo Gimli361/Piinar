@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 spotifyContainer.style.pointerEvents = 'auto';
             }
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 }); // Lower threshold to trigger sooner
     footerObserver.observe(footerSection);
 
     // 6. Final Surprise
