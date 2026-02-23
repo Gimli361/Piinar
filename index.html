@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>İyi ki Doğdun!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Special+Elite&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+    <div id="particles-container"></div>
+    <div id="flash-overlay"></div>
+    <div id="jokes-container"></div>
+
+    <!-- Spotify Embed Player -->
+    <div id="spotify-container" class="spotify-wrapper">
+        <iframe style="border-radius:12px"
+            src="https://open.spotify.com/embed/track/6tHhAUAMwUwlEGpAVq1jlX?utm_source=generator&theme=0" width="100%"
+            height="80" frameBorder="0" allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <main>
+        <!-- Section 1: Original Hero -->
+        <section class="hero initial-hide">
+            <h1 class="hero-title">İyi ki doğdun Canimm!🎂</h1>
+            <div class="scroll-hint">
+                <span>Aşağı kaydır...</span>
+                <div class="arrow"></div>
+            </div>
+        </section>
+
+        <!-- Section 2: Original Polaroid Gallery -->
+        <section class="gallery">
+            <div class="polaroid-wrapper">
+                <div class="card-container slide-left initial-hide">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="img-frame">
+                                <img src="images/WhatsApp Image 2026-02-23 at 20.18.25.jpeg" alt="Anı 1">
+                            </div>
+                            <p class="caption">En Sevdiğim Resmimiz</p>
+                            <div class="hci-hint">Tıkla🔄</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="back-content">
+                                <p>Canikom İyiki Tanımışım Seni iyiki Yolumuz ne sebepten olursa olsun kesişmiş.</p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container slide-right initial-hide">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="img-frame">
+                                <img src="images/WhatsApp Image 2026-02-23 at 20.18.33.jpeg" alt="Anı 2">
+                            </div>
+                            <p class="caption">İyi ki.</p>
+                            <div class="hci-hint">Tıkla 🔄</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="back-content">
+                                <p>Ömrüm Yettiğince Hep yanında Olacağım. </p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container slide-left initial-hide">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="img-frame">
+                                <img src="images/20251221_213927.jpg" alt="Anı 1">
+                            </div>
+                            <p class="caption">En güzel çiçekler, en güzel kalplere açar.</p>
+                            <div class="hci-hint">Tıkla🔄</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="back-content">
+                                <p>Yan yana büyüyeceğimiz, daha nice çiçekli yollarımız olsun Canımm.</p>
+                                
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Time Machine (The New Concept) -->
+        <section id="time-machine" class="time-machine-section initial-hide">
+            <div class="section-title">🕰️ Dostluk Zaman Makinesi</div>
+
+            <div id="tm-display-container">
+                <div class="tm-content-active" id="tm-content">
+                    <div class="tm-year-label" id="tm-year">2022</div>
+                    <div id="tm-visual" class="polaroid-frame">
+                        <img id="tm-photo" src="images/WhatsApp Image 2026-02-24 at 00.22.21.jpeg" alt="Zaman Tüneli">
+                        <div class="tm-tap-hint"></div>
+                    </div>
+                    <div class="tm-note-box">
+                        <p id="tm-note">İyiki Aynı sınıfa düşmüşüz </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- This UI is fixed but only shown when this section is active -->
+            <div id="tm-slider-ui" class="tm-slider-container hidden-ui">
+                <div class="tm-slider-track">
+                    <div class="tm-instruction">Zaman yolculuğu için parmağınla kaydır 👈👉</div>
+                    <input type="range" id="tm-range" min="0" max="4" value="0" step="0.01">
+                    <div class="tm-slider-marks">
+                        <span>2022</span>
+                        <span>2023</span>
+                        <span>2024</span>
+                        <span>2025</span>
+                        <span>Bugün</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Final Message & Footer -->
+        <section class="message-section initial-hide">
+            <div class="message-box">
+                <p>"İyi günümde kötü günümde başarımda başarısızlığımda hep yanımda olduğunu hissettirdin iyiki varsın" <br>
+                    -Maho </p>
+            </div>
+        </section>
+
+        <section class="footer initial-hide">
+            <div class="music-info">
+                
+                
+            </div>
+            <p class="final-wish">Yeni yaşında tüm güzellikler seninle olsun. İyiki Varsın.</p>
+            <button id="surprise-btn">❤️</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

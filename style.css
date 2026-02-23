@@ -1,0 +1,510 @@
+:root {
+    --bg-color: #FFFDD0;
+    --text-color: #4A4A4A;
+    --accent: #D4A373;
+    --serif: 'Playfair Display', serif;
+    --sans: 'Montserrat', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    line-height: 1.5;
+    transition: background-color 1s ease;
+}
+
+/* Global Section Settings */
+section {
+    min-height: 100dvh;
+    /* Use dynamic viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 6rem 1rem;
+    /* More vertical breathing room */
+    text-align: center;
+    touch-action: manipulation;
+    /* Faster touch responses */
+}
+
+/* Base Reveal Animations */
+.initial-hide {
+    opacity: 0;
+    transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hero {
+    transform: translateY(30px);
+}
+
+.slide-left {
+    transform: translateX(-80px);
+}
+
+.slide-right {
+    transform: translateX(80px);
+}
+
+.fade-in {
+    opacity: 1 !important;
+    transform: translate(0, 0) !important;
+}
+
+/* Backgrounds */
+#spotify-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    z-index: 2001;
+    transition: opacity 0.5s;
+}
+
+#particles-container,
+#jokes-container,
+#flash-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+#flash-overlay {
+    z-index: 2000;
+    background: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Time Tunnel Visuals */
+#time-tunnel-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+    background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#tm-display-container {
+    transition: filter 0.5s ease;
+}
+
+.traveling {
+    filter: blur(4px) brightness(1.1);
+}
+
+.vignette-active {
+    opacity: 1 !important;
+}
+
+.flash-anim {
+    animation: flashEffect 0.5s ease-out;
+}
+
+@keyframes flashEffect {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.particle {
+    position: absolute;
+    background: rgba(212, 163, 115, 0.15);
+    border-radius: 50%;
+}
+
+.joke {
+    position: absolute;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+    animation: drift 20s infinite linear;
+}
+
+@keyframes drift {
+    from {
+        transform: translateX(110vw);
+    }
+
+    to {
+        transform: translateX(-110vw);
+    }
+}
+
+/* Section 1: Hero */
+.hero-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 15vw, 5rem);
+    /* Responsive scaling */
+    font-weight: 700;
+    padding: 0 1rem;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    font-size: 0.85rem;
+    animation: bounce 2s infinite;
+}
+
+.arrow {
+    width: 15px;
+    height: 15px;
+    border-bottom: 2px solid var(--text-color);
+    border-right: 2px solid var(--text-color);
+    transform: rotate(45deg);
+    margin: 10px auto;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translateY(10px);
+        opacity: 1;
+    }
+}
+
+/* Section 2: Cards */
+.polaroid-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    /* More space between cards */
+    width: 100%;
+    max-width: 320px;
+}
+
+.card-container {
+    perspective: 1200px;
+    width: min(300px, 85vw);
+    /* Responsive card width */
+    height: 400px;
+    margin: 0 auto;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.card-container.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: #fff;
+    padding: 15px 15px 45px 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    background: #FFFEF5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px dashed var(--accent);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    padding: 20px;
+}
+
+.img-frame {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.img-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.caption {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+/* HCI Hints */
+.hci-hint {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    margin-top: auto;
+    font-family: var(--sans);
+    letter-spacing: 0.5px;
+    animation: hci-pulse 2.5s infinite;
+    padding-top: 5px;
+}
+
+@keyframes hci-pulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Section 3: Time Machine Scoped */
+.time-machine-section {
+    position: relative;
+    padding-bottom: 150px;
+}
+
+.section-title {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    margin-bottom: 3rem;
+    opacity: 0.7;
+}
+
+#tm-display-container {
+    width: 100%;
+    max-width: min(400px, 90vw);
+    perspective: 1000px;
+}
+
+.tm-content-active {
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+}
+
+.tm-exit-left {
+    transform: translateX(-50vw) scale(0.6) rotateY(-30deg);
+    opacity: 0;
+}
+
+.tm-exit-right {
+    transform: translateX(50vw) scale(0.6) rotateY(30deg);
+    opacity: 0;
+}
+
+.tm-enter-left {
+    transform: translateX(-50vw) scale(0.6) rotateY(-30deg);
+    opacity: 0;
+}
+
+.tm-enter-right {
+    transform: translateX(50vw) scale(0.6) rotateY(30deg);
+    opacity: 0;
+}
+
+.tm-year-label {
+    font-size: 4rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.polaroid-frame {
+    background: white;
+    padding: 15px 15px 40px 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.retro-frame {
+    border: 15px solid #222;
+    border-radius: 20px;
+    background: #000;
+    overflow: hidden;
+}
+
+#tm-photo {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.tm-note-box {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+}
+
+/* Time Machine UI Overlay */
+.tm-slider-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 1.5rem 3.5rem 1.5rem;
+    /* Better bottom safety area */
+    z-index: 100;
+    background: linear-gradient(to top, var(--bg-color) 70%, transparent);
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.hidden-ui {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.tm-slider-track {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.tm-instruction {
+    position: absolute;
+    top: -45px;
+    /* Offset more to avoid overlap */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    pointer-events: none;
+    animation: drift-hint 2s infinite alternate;
+}
+
+@keyframes drift-hint {
+    from {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    to {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+#tm-range {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#tm-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 36px;
+    /* Larger hit area */
+    height: 36px;
+    background: #333;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.tm-slider-marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #666;
+}
+
+/* Footer */
+.message-box {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 3rem 2rem;
+    max-width: 500px;
+    border: 1px solid rgba(212, 163, 115, 0.15);
+}
+
+.message-box p {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 6vw, 2.2rem);
+    font-style: italic;
+}
+
+.music-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+    opacity: 0.6;
+    font-size: 0.85rem;
+}
+
+.player-dot {
+    width: 8px;
+    height: 8px;
+    background: #1DB954;
+    border-radius: 50%;
+}
+
+#surprise-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.7rem 2.2rem;
+    font-size: 1.3rem;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+
+
+.heart-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    font-size: 24px;
+}
+
+/* Responsive Desktop */
+@media (min-width: 768px) {
+    .polaroid-wrapper {
+        max-width: 800px;
+    }
+
+    .card-container:nth-child(even) {
+        align-self: flex-end;
+    }
+
+    .card-container:nth-child(odd) {
+        align-self: flex-start;
+    }
+}
