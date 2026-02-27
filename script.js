@@ -75,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (entry.target.id === 'time-machine') {
                     document.getElementById('tm-slider-ui').classList.add('hidden-ui');
                     document.body.style.backgroundColor = '#FFFDD0'; // Reset home bg
+                    // Safety: Clear any stuck blur/vignette
+                    window.isForcingBlur = false;
+                    if (typeof window.updateTravelUI === 'function' && typeof tmSlider !== 'undefined') {
+                        window.updateTravelUI(Math.round(parseFloat(tmSlider.value)));
+                    }
                 }
             }
         });
@@ -101,6 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tmFlash = document.getElementById('flash-overlay');
     const jokesContainer = document.getElementById('jokes-container');
 
+    window.isForcingBlur = false;
+
     // Add vignette element if not present
     let vignette = document.getElementById('time-tunnel-vignette');
     if (!vignette) {
@@ -110,32 +117,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let currentYearIndex = 0;
+    let snapAnimationId = null;
+    let tmTimeout1 = null;
+    let tmTimeout2 = null;
+
+    window.updateTravelUI = function(val) {
+        const nearestIndex = Math.round(val);
+        const distanceToNearest = Math.abs(val - nearestIndex);
+        const intensity = Math.min(distanceToNearest * 4, 1);
+
+        const tmDisplay = document.getElementById('tm-display-container');
+        if (intensity > 0.1 || window.isForcingBlur) {
+            vignette.classList.add('vignette-active');
+            tmDisplay.classList.add('traveling');
+            vignette.style.opacity = window.isForcingBlur ? 1 : intensity;
+        } else {
+            vignette.classList.remove('vignette-active');
+            tmDisplay.classList.remove('traveling');
+            vignette.style.opacity = '';
+        }
+    };
 
     tmSlider.addEventListener('input', (e) => {
+        if (snapAnimationId) {
+            cancelAnimationFrame(snapAnimationId);
+            snapAnimationId = null;
+        }
+
         const val = parseFloat(e.target.value);
         const nearestIndex = Math.round(val);
 
-        // Continuous visual feedback (Time Tunnel)
+        window.updateTravelUI(val);
+
         const distanceToNearest = Math.abs(val - nearestIndex);
-        const intensity = Math.min(distanceToNearest * 4, 1); // Peak intensity at mid-point
-
-        if (intensity > 0.1) {
-            vignette.classList.add('vignette-active');
-            document.getElementById('tm-display-container').classList.add('traveling');
-            vignette.style.opacity = intensity;
-        } else {
-            vignette.classList.remove('vignette-active');
-            document.getElementById('tm-display-container').classList.remove('traveling');
-            vignette.style.opacity = '';
-        }
-
         // Trigger data update when crossing the threshold
         if (nearestIndex !== currentYearIndex && distanceToNearest < 0.3) {
-            const direction = nearestIndex > currentYearIndex ? 'right' : 'left';
-            currentYearIndex = nearestIndex;
-            triggerTimeTravel(nearestIndex, direction);
+            triggerTimeTravel(nearestIndex);
             if (window.navigator.vibrate) window.navigator.vibrate(50);
-            if (nearestIndex == timeData.length - 1) triggerConfetti();
         }
 
         // HCI: Remove slider instruction
@@ -145,34 +163,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Magnetic Snap: Smoothly animate to integer on release
     tmSlider.addEventListener('change', (e) => {
+        if (snapAnimationId) {
+            cancelAnimationFrame(snapAnimationId);
+        }
+        
         const nearestIndex = Math.round(parseFloat(e.target.value));
         const startVal = parseFloat(e.target.value);
         const dist = nearestIndex - startVal;
+        
+        if (dist === 0) {
+            if (nearestIndex !== currentYearIndex) triggerTimeTravel(nearestIndex);
+            return;
+        }
+        
         let step = 0;
         const animateSnap = () => {
             step += 0.1;
             if (step <= 1) {
-                tmSlider.value = startVal + (dist * step);
-                requestAnimationFrame(animateSnap);
+                const currentVal = startVal + (dist * step);
+                tmSlider.value = currentVal;
+                window.updateTravelUI(currentVal);
+                
+                if (Math.abs(currentVal - nearestIndex) < 0.3 && nearestIndex !== currentYearIndex) {
+                    triggerTimeTravel(nearestIndex);
+                    if (window.navigator.vibrate) window.navigator.vibrate(50);
+                }
+                
+                snapAnimationId = requestAnimationFrame(animateSnap);
             } else {
                 tmSlider.value = nearestIndex;
+                window.updateTravelUI(nearestIndex);
+                snapAnimationId = null;
             }
         };
         animateSnap();
     });
 
-    function triggerTimeTravel(index, direction) {
+    function triggerTimeTravel(index) {
+        if (index === currentYearIndex) return;
+        
+        const direction = index > currentYearIndex ? 'right' : 'left';
+        currentYearIndex = index;
+        
         const displayContainer = document.getElementById('tm-display-container');
         const content = document.getElementById('tm-content');
 
+        if (tmTimeout1) clearTimeout(tmTimeout1);
+        if (tmTimeout2) clearTimeout(tmTimeout2);
+
         // Start Tunnel Visuals
-        vignette.classList.add('vignette-active');
-        displayContainer.classList.add('traveling');
+        window.isForcingBlur = true;
+        window.updateTravelUI(parseFloat(tmSlider.value));
 
         // Exit Current Content
         content.className = direction === 'right' ? 'tm-content-active tm-exit-left' : 'tm-content-active tm-exit-right';
 
-        setTimeout(() => {
+        tmTimeout1 = setTimeout(() => {
             // Update Data
             const data = timeData[index];
             tmYear.innerText = data.year;
@@ -193,9 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
             content.className = 'tm-content-active';
 
             // End Tunnel Visuals
-            setTimeout(() => {
-                vignette.classList.remove('vignette-active');
-                displayContainer.classList.remove('traveling');
+            tmTimeout2 = setTimeout(() => {
+                window.isForcingBlur = false;
+                window.updateTravelUI(parseFloat(tmSlider.value));
+                if (index == timeData.length - 1) triggerConfetti();
             }, 400);
         }, 400);
     }
